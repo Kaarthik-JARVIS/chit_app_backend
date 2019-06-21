@@ -1060,7 +1060,6 @@ class MemberDetailView(views.APIView):
         try:
             member = GroupMembers.objects.filter(member_id=id)
             details = []
-
             for detail in member:
                 details.append({
                     'group':detail.group_id.name,
@@ -1069,6 +1068,12 @@ class MemberDetailView(views.APIView):
                     'amount':detail.group_id.chit_id.amount,
                     'date':detail.group_id.start_date,
                 })
-            return JsonResponse(details, safe=False, status=200)
+            result = {
+                #'id':id,
+                'name':member[0].member_id.name,
+                'groups':member.count(),
+                'details':details,
+            }
+            return JsonResponse(result, safe=False, status=200)
         except Exception as e:
             return JsonResponse({'message' : str(e),'status': False},status=200)
