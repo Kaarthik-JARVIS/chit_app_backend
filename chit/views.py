@@ -1059,19 +1059,22 @@ class MemberDetailView(views.APIView):
     def get(self,request, id=0):
         try:
             member = GroupMembers.objects.filter(member_id=id)
+            due = PayableAuction.objects.filter(member_id=id).aggregate(due=(Sum('total_payable')-Sum('paid_amount')))
             details = []
             for detail in member:
+                paycount = GroupAuction.objects.filter(group_id=detail.group_id).count()
                 details.append({
                     'group':detail.group_id.name,
                     'type':detail.group_id.type_id.name,
                     'color':detail.group_id.type_id.color,
                     'amount':detail.group_id.chit_id.amount,
                     'date':detail.group_id.start_date,
+                    'months':paycount,
                 })
             result = {
-                #'id':id,
                 'name':member[0].member_id.name,
                 'groups':member.count(),
+                'due':due['due'],
                 'details':details,
             }
             return JsonResponse(result, safe=False, status=200)
