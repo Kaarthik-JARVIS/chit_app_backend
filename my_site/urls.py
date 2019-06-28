@@ -61,4 +61,8 @@ urlpatterns = [
     path('api/groupDetail/<int:id>', views.GroupDataView.as_view()),
 
     path('api/memberDetail/<int:id>', views.MemberDetailView.as_view()),
+
+    path('api/memberTransaction/<int:id>', views.MemberTransactionView.as_view()),
+
+    path('api/dailyIncomeView',views.DailyIncomeView.as_view()),
 ]

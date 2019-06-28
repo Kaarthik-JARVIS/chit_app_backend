@@ -1080,3 +1080,35 @@ class MemberDetailView(views.APIView):
             return JsonResponse(result, safe=False, status=200)
         except Exception as e:
             return JsonResponse({'message' : str(e),'status': False},status=200)
+
+class MemberTransactionView(views.APIView):
+    def get(self,request, id=0):
+        try:
+            transactions = Transaction.objects.filter(member_id=id)
+            transaction = []
+            for detail in transactions:
+                transaction.append({
+                    'id':detail.id,
+                    'date':detail.date,
+                    'amount':detail.amount,
+                    'payment_mode':detail.payment_mode,
+                    'remarks':detail.remarks,
+                })
+            result = {
+                'id':transactions[0].member_id.id,
+                'name':transactions[0].member_id.name,
+                'transactions':transaction,
+            }
+            return JsonResponse(result, safe=False, status=200)
+        except Exception as e:
+            return JsonResponse({'message' : str(e),'status': False},status=200)
+
+class DailyIncomeView(views.APIView):
+    def post(self, request):
+        try:
+            date = request.data['date']
+            data = Transaction.objects.filter(date=date).aggregate(income=Sum('amount'))
+            return JsonResponse(income['amount'], safe=False, status=200)
+
+        except Exception as e:
+            return JsonResponse({'message' : str(e),'status': False},status=200)
