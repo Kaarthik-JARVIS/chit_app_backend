@@ -1103,12 +1103,42 @@ class MemberTransactionView(views.APIView):
         except Exception as e:
             return JsonResponse({'message' : str(e),'status': False},status=200)
 
-class DailyIncomeView(views.APIView):
+class DashboardView(views.APIView):
     def post(self, request):
         try:
             date = request.data['date']
-            data = Transaction.objects.filter(date=date).aggregate(income=Sum('amount'))
-            return JsonResponse(income['amount'], safe=False, status=200)
+            dailyincome = Transaction.objects.filter(date__startswith=date).aggregate(income=Sum('amount'))
+            dailyexpense = Expense.objects.filter(date__startswith=date).aggregate(expense=Sum('amount'))
+            dashboard = {
+                'income':dailyincome['income'],
+                'expense':dailyexpense['expense'],
+            }
+            return JsonResponse(dashboard, safe=False, status=200)
 
         except Exception as e:
             return JsonResponse({'message' : str(e),'status': False},status=200)
+
+class DailyTransaction(views.APIView):   
+    def post(self, request):
+        """ Get Details
+        """
+        try:
+            date = request.data['date']
+            datas = Transaction.objects.filter(date__startswith=date)
+                
+            result = []
+
+            for data in datas:
+                result.append({
+                    'id':data.id,
+                    'date':data.date,
+                    'memberId':data.member_id.id,
+                    'memberName':data.member_id.name,
+                    'amount':data.amount,
+                    'paymentMode':data.payment_mode,
+                    'remarks':data.remarks,
+                    'createdBy':data.createdBy.name,
+                })
+            return JsonResponse(result, safe=False, status=200)
+        except Exception as e:
+                return JsonResponse({'message' : str(e),'status': False},status=200)
