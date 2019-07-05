@@ -66,4 +66,5 @@ urlpatterns = [
 
     path('api/dashboardView',views.DashboardView.as_view()),
     path('api/dailyTransaction',views.DailyTransaction.as_view()),
+    path('api/memberDue/<int:id>', views.MemberDueView.as_view()),
 ]

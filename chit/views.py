@@ -1081,6 +1081,18 @@ class MemberDetailView(views.APIView):
         except Exception as e:
             return JsonResponse({'message' : str(e),'status': False},status=200)
 
+class MemberDueView(views.APIView):
+    def get(self,request, id=0):
+        try:
+            due = PayableAuction.objects.filter(member_id=id).aggregate(due=(Sum('total_payable')-Sum('paid_amount')))
+            result = {
+                'id': id,
+                'due':due['due'],
+            }
+            return JsonResponse(result, safe=False, status=200)
+        except Exception as e:
+            return JsonResponse({'message' : str(e),'status': False},status=200)
+
 class MemberTransactionView(views.APIView):
     def get(self,request, id=0):
         try:

@@ -82,11 +82,12 @@ WSGI_APPLICATION = 'my_site.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'chit_backend',
+        'NAME': 'chitapp',
+        #'NAME': 'chit_backend',
         'USER': 'root',
-        'PASSWORD': '',
-        # 'HOST': '13.233.179.3',
-        'HOST': 'works.zoorik',
+        'PASSWORD': 'vgts@1234',
+        'HOST': '13.235.8.148',
+        #'HOST': 'works.zoorik',
         'PORT': '3306',
     }
 }
@@ -120,7 +121,7 @@ REST_FRAMEWORK = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Kolkata'
+TIME_ZONE = 'Asia/Calcutta'
 
 USE_I18N = True
 
